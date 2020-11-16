@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ChatInputAccessoryView" customModule="message" customModuleProvider="target">
+            <connections>
+                <outlet property="chatTextView" destination="86i-7J-FCL" id="etp-eL-Rea"/>
+                <outlet property="sendButton" destination="a7w-KF-4y2" id="kL9-M7-6Oc"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="906" height="333"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" text="メッセージが入ります" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="86i-7J-FCL">
+                    <rect key="frame" x="10" y="54" width="836" height="235"/>
+                    <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="1" alpha="0.84705882352941175" colorSpace="calibratedRGB"/>
+                    <color key="textColor" systemColor="labelColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                </textView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a7w-KF-4y2">
+                    <rect key="frame" x="856" y="156.5" width="40" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="Lff-7c-v27"/>
+                        <constraint firstAttribute="height" constant="30" id="PjS-QM-LuK"/>
+                    </constraints>
+                    <state key="normal" image="paperplane" catalog="system">
+                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
+                    </state>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="86i-7J-FCL" secondAttribute="bottom" constant="10" id="79K-KK-hyv"/>
+                <constraint firstItem="86i-7J-FCL" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="AUW-vN-sO4"/>
+                <constraint firstItem="86i-7J-FCL" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="10" id="PHj-By-RoP"/>
+                <constraint firstItem="a7w-KF-4y2" firstAttribute="centerY" secondItem="86i-7J-FCL" secondAttribute="centerY" id="WhO-om-aVs"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="a7w-KF-4y2" secondAttribute="trailing" constant="10" id="nmc-HE-055"/>
+                <constraint firstItem="a7w-KF-4y2" firstAttribute="leading" secondItem="86i-7J-FCL" secondAttribute="trailing" constant="10" id="wF4-1q-n1k"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="31.884057971014496" y="32.477678571428569"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="paperplane" catalog="system" width="128" height="118"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
