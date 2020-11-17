@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -53,6 +53,7 @@
             <connections>
                 <outlet property="dateLabel" destination="Lph-fr-Exz" id="ZWR-cH-nen"/>
                 <outlet property="messageTextView" destination="z1T-pt-Uq7" id="c7U-e7-5Y6"/>
+                <outlet property="messageTextViewWithConstraint" destination="cpM-9n-t3i" id="Onw-JQ-UCc"/>
                 <outlet property="userImageView" destination="kbh-Ah-aMh" id="DzA-zs-dAN"/>
             </connections>
             <point key="canvasLocation" x="372.46376811594206" y="176.78571428571428"/>
