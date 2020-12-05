@@ -10,10 +10,11 @@ import Firebase
 
 class ChatRoom {
     
-    let latestMessageId: String?
+    let latestMessageId: String
     let members: [String]
     let creatAt: Timestamp
     
+    var latestMessage: Message?
     var documentId: String?
     var partnerUser: User?
     

@@ -14,6 +14,8 @@ class ChatListViewController: UIViewController {
     
     private let cellId = "cellId"
     private var chatrooms = [ChatRoom]()
+    private var chatRoomListener: ListenerRegistration?
+    
     private var user: User? {
         didSet {
             navigationItem.title = user?.username
@@ -29,12 +31,22 @@ class ChatListViewController: UIViewController {
 
         setupViews()
         confirmLoggedInUser()
-        fetchLoginUserInfo()
         fetchChatRoomInfoFromFirestore()
+
     }
     
-    private func fetchChatRoomInfoFromFirestore() {
-        Firestore.firestore().collection("chatRooms")
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchLoginUserInfo()
+        
+    }
+    
+    func fetchChatRoomInfoFromFirestore() {
+        chatRoomListener?.remove()
+        chatrooms.removeAll()
+        chatListTableView.reloadData()
+        
+        chatRoomListener = Firestore.firestore().collection("chatRooms")
             .addSnapshotListener { (snapshot, err) in
                 
                 //.getDocuments { (snapshot, err) in
@@ -79,10 +91,29 @@ class ChatListViewController: UIViewController {
                     let user = User(dic: dic)
                     user.uid = documentChange.document.documentID
                     chatroom.partnerUser = user
-                    self.chatrooms.append(chatroom)
-                    print(self.chatrooms[0].members)
-                    self.chatListTableView.reloadData()
                     
+                    guard let chatroomId = chatroom.documentId else { return }
+                    let latestMessageId = chatroom.latestMessageId
+                    
+                    if latestMessageId == "" {
+                        self.chatrooms.append(chatroom)
+                        self.chatListTableView.reloadData()
+                        return
+                    }
+                    
+                    Firestore.firestore().collection("chatRooms").document(chatroomId).collection("messages").document(latestMessageId).getDocument { (snapShot, err) in
+                        if let err = err {
+                            print("最新情報の取得に失敗しました", err)
+                            return
+                        }
+                        guard let dic = snapShot?.data() else { return }
+                        let message = Message(dic: dic)
+                        chatroom.latestMessage = message
+                
+                        self.chatrooms.append(chatroom)
+                        self.chatListTableView.reloadData()
+                        
+                    }
                 }
             }
         }
@@ -100,25 +131,42 @@ class ChatListViewController: UIViewController {
         
         
         let rightBarButton = UIBarButtonItem(title: "新規チャット", style: .plain, target: self, action: #selector(tappedNavRightBarButton))
+        let logoutBarButton = UIBarButtonItem(title: "ログアウト", style: .plain, target: self, action: #selector(tappedLogoutButton))
         navigationItem.rightBarButtonItem = rightBarButton
         navigationItem.rightBarButtonItem?.tintColor = .white
+        navigationItem.leftBarButtonItem = logoutBarButton
+        navigationItem.leftBarButtonItem?.tintColor = .white
         
     }
     
     private func confirmLoggedInUser() {
         if Auth.auth().currentUser?.uid == nil {
-            let storyborad = UIStoryboard(name: "SignUp", bundle: nil)
-            let signupViewController = storyborad.instantiateViewController(withIdentifier: "SignUpViewController") as! SignUpViewController
-            signupViewController.modalPresentationStyle = .fullScreen
-            self.present(signupViewController, animated: true, completion: nil)
+            pushLoginViewController()
         }
+    }
+    
+    @objc private func tappedLogoutButton() {
+        do {
+            try Auth.auth().signOut()
+            pushLoginViewController()
+        } catch {
+            print("ログアウトに失敗")
+        }
+        
+    }
+    
+    private func pushLoginViewController() {
+        let storyborad = UIStoryboard(name: "SignUp", bundle: nil)
+        let signUpViewController = storyborad.instantiateViewController(withIdentifier: "SignUpViewController") as! SignUpViewController
+        let nav = UINavigationController(rootViewController: signUpViewController)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true, completion: nil)
     }
     
     @objc private func tappedNavRightBarButton() {
         let storyborad = UIStoryboard.init(name: "UserList", bundle: nil)
         let userListViewController = storyborad.instantiateViewController(withIdentifier: "UserListViewController")
         let nav = UINavigationController(rootViewController: userListViewController)
-      
         self.present(nav, animated: true, completion: nil)
     }
     
@@ -174,19 +222,6 @@ class ChatListTableViewCell: UITableViewCell {
     @IBOutlet weak var partnerLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     
-    //    var user: User? {
-    //        didSet {
-    //            if let user = user {
-    //                partnerLabel.text = user.username
-    //
-    //                //userImageView.image = user?.profileImageUrl
-    //
-    //                dateLabel.text = dateForematterForDateLabel(date: user.createdAt.dateValue())
-    //                latestMessageLabel.text = user.email
-    //            }
-    //        }
-    //    }
-    
     var chatroom: ChatRoom? {
         didSet {
             if let chatroom = chatroom {
@@ -195,7 +230,8 @@ class ChatListTableViewCell: UITableViewCell {
                 guard let url = URL(string: chatroom.partnerUser?.profileImageUrl ?? "") else { return }
                 Nuke.loadImage(with: url, into: userImageView)
                 
-                dateLabel.text = dateForematterForDateLabel(date: chatroom.creatAt.dateValue())
+                dateLabel.text = dateForematterForDateLabel(date: chatroom.latestMessage?.createdAt.dateValue() ?? Date())
+                latestMessageLabel.text = chatroom.latestMessage?.message
             }
         }
     }

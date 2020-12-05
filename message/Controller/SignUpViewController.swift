@@ -9,6 +9,7 @@ import UIKit
 import Firebase
 import FirebaseFirestore
 import FirebaseAuth
+import PKHUD
 
 class SignUpViewController: UIViewController {
     
@@ -24,6 +25,16 @@ class SignUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setUpViews()
+       
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+    }
+    
+    private func setUpViews() {
         profileImageButton.layer.cornerRadius = 85
         profileImageButton.layer.borderWidth = 1
         profileImageButton.layer.borderColor = UIColor.rgb(red: 240, green: 240, blue: 240
@@ -32,12 +43,19 @@ class SignUpViewController: UIViewController {
         
         profileImageButton.addTarget(self, action: #selector(tappedProfileImageButton), for: .touchUpInside)
         registerButton.addTarget(self, action: #selector(tappedRegisterButton), for: .touchUpInside)
+        alreadyHaveAccountButton.addTarget(self, action: #selector(tappedAlreadyHaveAccountButton), for: .touchUpInside)
         
         emailTextField.delegate = self
         passwardTextField.delegate = self
         usernameTextField.delegate = self
         registerButton.isEnabled = false
         registerButton.backgroundColor = .rgb(red: 100, green: 100, blue: 100)
+    }
+    
+    @objc private func tappedAlreadyHaveAccountButton() {
+        let storyboard = UIStoryboard(name: "Login", bundle: nil)
+        let loginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController")
+        self.navigationController?.pushViewController(loginViewController, animated: true)
     }
     
     @objc private func tappedProfileImageButton() {
@@ -53,6 +71,8 @@ class SignUpViewController: UIViewController {
     @objc private func tappedRegisterButton() {
         guard let image = profileImageButton.imageView?.image else { return }
         guard let uploadImage = image.jpegData(compressionQuality: 0.3) else { return }
+        
+        HUD.show(.progress)
 
         let fileName = NSUUID().uuidString
         let storageRef = Storage.storage().reference().child("profile_image").child(fileName)
@@ -61,12 +81,14 @@ class SignUpViewController: UIViewController {
             if let err = err {
                 print("err", err)
                 print(err)
+                HUD.hide()
                 return
             }
 
             storageRef.downloadURL{ (url, err) in
                 if let err = err {
                     print("err2")
+                    HUD.hide()
                     return
                 }
 
@@ -85,6 +107,7 @@ class SignUpViewController: UIViewController {
             if let err = err {
                 print(err)
                 print("err3")
+                HUD.hide()
                 return
             }
             print("ok")
@@ -102,12 +125,18 @@ class SignUpViewController: UIViewController {
                 (err) in
                 if let err = err {
                     print("err4")
+                    HUD.hide()
                     return
                 }
                 print("保存成功")
+                HUD.hide()
                 self.dismiss(animated: true, completion: nil)
             }
         }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
 }
 

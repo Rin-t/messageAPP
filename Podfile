@@ -11,6 +11,7 @@ target 'message' do
   pod 'Firebase/Firestore'
   pod 'Firebase/Storage'
   pod 'Nuke'
+  pod 'PKHUD'
 
   target 'messageTests' do
     inherit! :search_paths
